@@ -83,7 +83,7 @@ ss -lnput | grep ntpd    &>/dev/null
       ss -lnput | grep chronyd  &>/dev/null
        if [ $? -eq 0 ]; then
         sed -ri  "s/^server.*iburst$/#server 3.centos.pool.ntp.org iburst/g"  /etc/chrony.conf
-        echo  server ntp.aliyun.com  iburst  >> /etc/chrony.conf
+        echo  "server time1.cloud.tencent.com iburst"  >> /etc/chrony.conf
        else
         chrony
        fi
