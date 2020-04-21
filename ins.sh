@@ -69,7 +69,7 @@ more_install () {
 ping2
 ping3
 ping4
-cp $data/install.config.new.sample  $data/install.config
+cp $data/install.config.3ip.sample  $data/install.config
 sed -i "8,15s/^/#/"  $data/install.config
 sed -i "4s/$num.1/$ip2/1"  $data/install.config
 sed -i "5s/$num.2/$ip3/1"  $data/install.config

@@ -10,7 +10,7 @@ rm -rf /data/install /data/bkce /data/src 	&>/dev/null
 rpm -ev python27-2.7.9 python27-devel			&>/dev/null
 yum remove nginx rabbitmq-server beanstalkd		&>/dev/null
 mkdir /root/bk   &>/dev/null
-mv /usr/local/bin/*  /root/bk  &>/dev/null
+mv /usr/local/bin/*  /root/usrlocalbin.bak  &>/dev/null
 rm -f /root/.bkrc					&>/dev/null
 rm -rf /etc/rc.d/bkrc.local					&>/dev/null
 sed -ri "s/.*cloud.[a-z]{2}.[a-z]{3}//"  /etc/hosts
