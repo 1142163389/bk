@@ -17,7 +17,7 @@ one_install () {
         fi
     done
 
-cp $data/install.config.3ip.sample  $data/install.config
+cp $data/install.config.new.sample  $data/install.config
 sed -i "8,15s/^/#/"  $data/install.config
 sed -ri "4,6s/[0-9]{2}.[0-9]{1}.{2}.[0-9]{1}/$ip1/1"  $data/install.config
 sed -i "s/bk.com/monkey.monkey.monkey/"  $data/globals.env
@@ -69,7 +69,7 @@ more_install () {
 ping2
 ping3
 ping4
-cp $data/install.config.3ip.sample  $data/install.config
+cp $data/install.config.new.sample  $data/install.config
 sed -i "8,15s/^/#/"  $data/install.config
 sed -i "4s/$num.1/$ip2/1"  $data/install.config
 sed -i "5s/$num.2/$ip3/1"  $data/install.config
