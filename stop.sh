@@ -3,7 +3,7 @@
 cd /usr/local/gse/plugins/bin/ 2>/dev/null && ./stop.sh basereport   2>/dev/null
 rm -rf /usr/local/gse /var/log/gse /var/run/gse /var/lib/gse  2>/dev/null
 cd /data/install/  2>/dev/null && cp uninstall/uninstall.sh .     2>/dev/null 
-bash uninstall.sh   2> /dev/null
+bash uninstall.sh  
 cd /data/  &&  ./bkcec clean cron 2>/dev/null  &&   ./bkcec stop all  2>/dev/null
 chattr -i /data/install/.migrate/*                      2>/dev/null
 rm -rf /data/install /data/bkce /data/src 	2>/dev/null
