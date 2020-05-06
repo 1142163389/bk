@@ -26,8 +26,8 @@ sed -i 's/^SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 echo "* soft nofile 102400
 * hard nofile 102400"  >>  /etc/security/limits.conf
 
-echo  'ulimit -Hn 102400
-ulimit -Sn 102400' >> /etc/profile
+echo  'ulimit -Sn 102400
+ulimit -Hn 102400' >> /etc/profile
 
 
 if   [ ! -d /data ];then 
