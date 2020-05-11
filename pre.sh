@@ -37,6 +37,7 @@ echo "开始解压，请稍等..."
 tar xf /root/bkce_src-5.1.28.tar.gz  -C /data  && tar xf /root/install_ce-1.6.24.168.tgz  -C /data  && tar xf /root/ssl_certificates.tar.gz  -C /data/src/cert 
 if [ $? -ne 0 ];then 
 echo "没有找到软件包，或者软件包名字不对"
+exit 
 fi
 
 mkdir /etc/yum.repos.d/all                &>/dev/null
