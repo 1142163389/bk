@@ -33,6 +33,9 @@ reset_cmdb_topo (){
     "${CTRL_DIR}"/bkeec initdata cmdb
     echo "1111111"
 }
+reset_host(){
+for i in ${ALL_IP[@]};do ssh $i "curl -s http://metadata.tencentyun.com/meta-data/instance-id;echo """;done
+}
 
 de() {
 source "${CTRL_DIR}/utils.fc"
