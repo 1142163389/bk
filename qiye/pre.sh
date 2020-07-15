@@ -46,6 +46,10 @@ echo "没有找到软件包，或者软件包名字不对"
 exit
 fi
 
+cp /root/bk/qiye/install.config  /data/install/
+sed -i "s/bk.com/liu.com/"  /data/install/globals.env
+sed -ri "s/export PAAS_ADMIN_PASS='(\w+)'/export PAAS_ADMIN_PASS='123456'/"   /data/install/globals.env
+
 echo "正在配置yum源,请稍等..."
 mkdir /etc/yum.repos.d/all                &>/dev/null
 mv /etc/yum.repos.d/* /etc/yum.repos.d/all/   &>/dev/null
@@ -62,6 +66,8 @@ which rsync   >/dev/null
 if [ $? -ne 0 ];then
  yum -y install rsync
 fi
+
+bash configure_ssh_without_pass
 
 
 echo "蓝鲸准备已经完成，请执行source /etc/profile 或者重启后进行安装！"
