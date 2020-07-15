@@ -1,0 +1,302 @@
+单机版部署正式和测试环境只有1个： APPO正式环境  APPT测试环境
+单机版只能部署一个，如果是只有正式环境，需要测试环境，则需去掉/data/install/install.config中的appo
+执行   ./bkcec install appt &&  ./bkcec initdata appt && ./bkcec start appt && ./bkcec activate appt 
+
+windows，linux 执行安装添加agent报错
+点击失败看报错信息，安装proxy必须走公网才行，（云主机需要配置策略ip）其下是子节点，节点报错不要走公网要走内网（对应ip看清楚）
+。插件显示不出来点击右上角齿轮，正确配置信息。Authentication failed认证失败，密码/密钥错误。
+
+蓝鲸监控部署失败：
+nginx出现502，先看能否进入paas(测试机，正式机)
+看日志 
+/data/bkce/logs/open_paas/paas.log
+实在不行，卸载重装
+
+/data/bkce/.envs/paas_agent/bin/supervisord:Permission denied:权限不足
+chown -R apps:apps /data/bkce/.envs
+
+python执行脚本服务器没问题，蓝鲸上报错：（交互命令不支持，import使用绝对路径试一下）
+
+中控机kafka起不来：Failed to acquire lock on file .lock in  ..   （es起不来，先看kafka）
+cd /data/bkce/logs/kafka/
+rm -rf * 
+ps -ef | grep kafka  (查到进程)   
+kill  -9 （查到的进程）
+cd /data/install
+./bkcec start kafka
+
+
+
+zk.service.consul无法解析：
+/data/bkce/service/zk/bin/zkCli.sh -server zk.service.consul:2181 ls /  （zookeeper是否存在）
+dig   zk.service.consul    看解析是否正确
+/etc/resovle.conf 第一行是否有nameserver 127.0.0.1
+https://bk.tencent.com/docs/document/5.1/10/252
+./bkcec  stop consul
+./bkcec  start consul
+
+
+
+安装proxy常见报错：
+https://bk.tencent.com/s-mart/community/question/204
+
+
+mysql
+Get Lock Error:(1146..) (数据库被多次同时进行操作)
+cd /data/install
+./bkcec stop mysql
+./bkcec start mysql
+
+
+error： server quit without updating PID file （/mysql/mysql.pid）
+rm -rf /data/bkce/logs/mysql/mysql.sock
+rm -rf /data/bkce/logs/mysql/mysql.sock.lock
+touch  /data/bkce/logs/mysql/mysql.sock
+把/data/bkce/public/mysql/mysql.pid里的进程号删掉  
+chown  -R  mysql.mysql  该目录
+中控机重启mysql
+在不行完全卸载mysql在执行蓝鲸安装
+
+
+databus.bkdata.service.consul域名无法解析：
+登录databus所在机器执行
+supervisorctl -c /data/bkce/etc/supervisor-bkdata-databus.conf restart all
+./bkcec start  bkdata 
+./bkcec status  bkdata 
+
+
+bkdata:
+FAILED (errors=1)
+登录databus所在机器执行
+supervisorctl -c /data/bkce/etc/supervisor-bkdata-databus.conf restart all
+./bkcec start  bkdata 
+./bkcec status  bkdata 
+
+
+单机如何配置 install.config？
+环境OK后 执行 ./install_minibk 
+
+
+ Zk get child [/gse/config/server/btfiles/2/30] err？ ：
+cat /data/bkce/etc/gse/btsvr.conf | grep zkauth(vim +57  /data/install/globals.env查看账号密码)
+登陆zk       /data/bkce/service/zk/bin/zkCli.sh -server zk.service.consul:2181
+密码验证   addauth digest zk_user:zk_pass
+查看节点   ls /gse/config/server/btfiles     是否为[all,test]
+查看配置文件   vim  +11 /data/bkce/etc/zoo.cfg  是否缺失节点
+cd /data/install  &&  ./bkcec start zk
+
+saas部署超时
+/data/bkce/etc/paas_agent_config.yaml
+/data/bkce/paas_agent/paas_agent/etc/paas_agent_config.yaml
+EXECUTE_TIME_LIMIT: 300
+./bkcec stop paas && ./bkcec start paas
+
+
+FAIL TO WATCH TARGET   //       check usr adn passwd fail :
+
+/usr/local/gse/plugins/bin/start.sh  processbeat -c /usr/local/gse/plugins/etc/processbeat.conf
+/usr/local/gse/plugins/bin/start.sh  basereport -c /usr/local/gse/plugins/etc/basereport.conf 
+
+
+
+
+
+节点管理配置nginx server报错初始化异常：nginx服务器找不到初始化文件：
+ nginx所在机器查看是否该文件，若无
+/data/bkce/miniweb/download/init_nodeman.json则
+./bkcec stop nginx 
+./bkcec install nginx
+./bkcec start nginx
+./bkcec stop gse
+./bkcec initdata gse
+./bkcec start gse
+./bkcec pack gse_plugin
+缺少init_nodeman.json文件
+
+执行后如果还是没有发现init_nodeman.json文件，但是会提示在哪里，
+把他传到中控机/data/bkce/miniweb/download/即可
+或者在每台机器执行  find /  -name "init_nodeman.json"
+然后把文件传到中控机/data/bkce/miniweb/download/
+若需要密钥登陆就把公钥传在传一次，保证三台机器能够互相免密登陆
+
+
+./bkcec activate   appo  报错 no route to host
+检查selinux，firewalld
+                                   报错 activate  failed
+查看vim  /data/bkce/paas_agent/paas_agent/etc/paas_agent_config.yaml   中的sid，token是否与服务器信息
+的ID，TOKEN一致
+
+
+port  31001 start failed，please check ：
+根据此文档来排查  https://bk.tencent.com/docs/document/5.1/10/248  
+
+
+其中可用的 command 有：
+
+sync： 从中控机的 src/ 同步安装 <module> 依赖的文件和目录到对应机器的 src/ 下。
+install： 安装 <module> 到 $INSTALL_PATH(默认 /data/bkce)下。
+install 1： 等同于先执行 sync <module>，再执行install <module>，合二为一。
+initdata： 安装后初始化，常用于模块的用户创建，sql 导入，权限设置等操作。
+render： 渲染模块的模板文件，install 过程中会调用它，做模板变量替换。
+status： 检查模块的进程是否运行。
+start： 启动模块的进程。
+stop： 停止模块的进程。
+upgrade： 升级更新模块。
+
+
+
+create the user administrator  FAILED：
+全新部署报错执行以下
+rm -rf /data/bkce/public/mongodb/
+回到中控机删除/data/install/.bk_install.step文件中记录的mongodb信息
+重装mongodb
+./bkcec sync common
+./bkcec install mongodb 1
+./bkcec initdata mongodb
+./bkcec start mongodb
+./bkcec status mongodb
+
+
+Script exit code non-zero：
+推出代码非0
+不要直接重启，先执行停止在启动，若 not  exist，则先更新安装
+
+
+
+<<<<<<< HEAD
+run trt migration：
+https://bk.tencent.com/s-mart/community/question/914
+
+Can not find Agent by ip XXXX ：
+重装proxy
+
+
+
+蓝鲸监控数据未上报：
+https://bk.tencent.com/s-mart/community/question/571
+
+=======
+parse install.config failed:no module named site
+可能是没解压脚本包
+>>>>>>> 9d617563748d58d8ece8fa42d004d05e59ecb279
+
+
+the error code is '5000',unknown meaning
+重启cmdb
+
+
+Deploy saas bk_fta_solutions failed
+是否改动过什么没在globals同步，是否改了密码
+需要同步到globals.env
+然后./bkcec sync common
+
+
+Python:2.7.9 not in '>=3.5'
+https://bk.tencent.com/s-mart/community/question/796
+
+
+workon  : command not found :
+是否把/root变成了挂载点，/root有文件丢失导致。
+ls ~/.bkrc
+若没有  touch ~/.bkrc  把内容复制粘贴到文件里面
+
+
+
+
+activate  appt failed. api :
+digzk.service.consul
+./bkcec start appt
+./bkcec start appo
+./bkcec status appt 
+./bkcec status appo 
+./bkcec activate appt  
+./bkcec activate appo
+
+
+pip install  xxx for bkdata-dataapi  FAILED:
+https://bk.tencent.com/s-mart/community/question/492
+
+
+/var/run/cmdb/supervisord_cmdb.pid does  not exist:
+/opt/py27/bin/supervisord -c /data/bkce/etc/supervisor-cmdb-server.conf
+
+
+gse_task:ERROR STATUS
+检查gse进程 
+tail -5 /data/bkce/logs/gse/task-err.log 
+/data/bkce/service/zk/bin/zkCli.sh -server zk.service.consul:2181 ls /  （zookeeper是否存在）
+vim  /data/bkee/etc/zoo.cfg  单机版看最后一行是否有server.1 = 10.0.0.x：2888：3888
+实在不行 重装zookeeper
+
+
+ERROR: init_snapshot_config (databus.tests.DatabusHealthTestCase)：
+./bkcec stop cmdb
+./bkcec start cmdb
+./bkcec initdata cmdb
+./bkcec stop bkdata
+./bkcec initdata bkdata
+./bkcec start bkdata
+
+
+gse_data   has no established  connection  with kafka  (9092)：
+检查日志  /data/bkce/logs/gse/data-xx.log
+检查证书是否为gse和license机器下载的证书重新下载比对MD5
+
+
+蓝鲸错误代码：
+https://bk.tencent.com/docs/document/5.1/19/569
+
+
+[Errno  111]  /     init bkdata   /   生成图表异常 /    access /data/bkce/public/mysql/bk_monitor/: no such file or directory
+rpm -qa | grep mariadb-devel  
+
+
+
+#include "mysql.h"
+rpm -qa | grep mariadb-devel
+yum  -y remove mariadb-devel
+yum  -y install mariadb-devel
+
+rabbitmq        Error on AMQP connection / AMQPLAIN login refused:
+看rabbitmq的日志可以看到是认证的问题。那么可以想到，rabbitmq里面的用户存储的密码跟usemgr登陆使用的密码不一致。
+解决思路：
+因为rabbitmq的密码是初始化app_token来的，所以不存在usermgr配置的密码不对，那么就是rabbitmq里面的问题了。
+1、删掉vhost ------> rabbitmqctl delete_vhost bk_usermgr
+2、删掉bk_usermgr -------> delete_user bk_usermgr
+3、重新创建bk_usermgr
+source /data/install/utils.fc
+source initdata.rc
+_add_rabbitmq_privilages bk_usermgr
+
+（rabbitmqctl add_user bk_usermgr 08ec31e4-f10b-4119-b69e-59caefde01cf
+rabbitmqctl set_user_tags bk_usermgr  management
+rabbitmqctl add_vhost bk_usermgr
+rabbitmqctl  set_permissions -p bk_usermgr  bk_usermgr '.*' '.*' '.*'
+rabbitmqctl set_policy ha-all '^' '{"ha-mode": "all","ha-sync-mode":"automatic"}' -p bk_usermgr）
+
+
+组件调用异常  /   ESB api: http://xxx   (code=xxxxxxx):
+是否改了consul.d/*.json文件  
+改了 consul reload一下
+
+
+
+增加延时到100以上的命令：tc qdisc add dev eth0 root netem delay 100ms 10ms
+删除： tc qdisc del dev eth0 root netem delay 100ms 10ms
+查询： tc -s qdisc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
