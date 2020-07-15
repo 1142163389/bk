@@ -1,0 +1,1 @@
+cd /data/install && ./bk_install paas && ./bk_install app_mgr && ./bk_install cmdb && ./bk_install job && ./bk_install bkmonitor  &&  ./bk_install fta   && ./bk_install bkdata && ./bk_install plugin && ./bk_install saas-o 
