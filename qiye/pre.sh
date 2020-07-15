@@ -67,7 +67,7 @@ if [ $? -ne 0 ];then
  yum -y install rsync
 fi
 
-bash configure_ssh_without_pass
+bash /root/bk/qiye/configure_ssh_without_pass
 
 
 echo "蓝鲸准备已经完成，请执行source /etc/profile 或者重启后进行安装！"
