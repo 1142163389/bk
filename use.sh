@@ -43,12 +43,18 @@ se() {
 cd /data/install && ./bkeec status $1
 }
 
-ge(){
- for i in ${ALL_IP[@]};do ssh $i "curl -s http://metadata.tencentyun.com/meta-data/instance-id;echo """;done
-}
 
 ge2(){
 source "${CTRL_DIR}/utils.fc"
 for i in ${ALL_IP[@]};do echo "$i";done
+}
+
+ge(){
+echo  "NGINX_IP -> ${NGINX_IP[@]}" 
+echo  "PAAS_IP  -> ${PAAS_IP[@]}" 
+echo  "CMDB_IP  -> ${CMDB_IP[@]}"   
+echo  "MYSQL_IP -> ${MYSQL_IP[@]}"
+echo  "REDIS_IP -> ${REDIS_IP[@]}" 
+rcmd $1
 }
 
