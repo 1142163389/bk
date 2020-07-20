@@ -29,23 +29,28 @@ echo "* soft nofile 102400
 echo  'ulimit -Hn 102400
 ulimit -Sn 102400' >> /etc/profile
 
-wget 10.0.5.138/bkee_common-2.0.3.11.tgz
-wget 10.0.5.138/bkee_product-2.5.0.14-pretest.tgz
-wget 10.0.5.138/cert_ee-1.2.4_pretest.tgz
-wget 10.0.5.138/install_ee-v1.9.0.tgz
-wget 10.0.5.138/src_2.5.tgz
+wget 10.0.5.138/2.5.1.17/bkee_common-2.0.3.11.tgz
+wget 10.0.5.138/2.5.1.17/bkee_product-2.5.1.17-pretest.tgz
+wget 10.0.5.138/2.5.1.17/cert_ee-1.2.4_pretest.tgz
+wget 10.0.5.138/2.5.1.17/install_ee-iam-08b6126e.tgz
+wget 10.0.5.138/2.5.1.17/src_2.5.tgz
 
 
 if   [ ! -d /data ];then 
 mkdir /data
 fi 
 echo "开始解压，需要一定时间，请稍等..."
-tar xf /root/bk/qiye/bkee_common-2.0.3.11.tgz   -C /data  && tar xf /root/bk/qiye/bkee_product-2.5.0.14-pretest.tgz  -C /data  && tar xf /root/bk/qiye/cert_ee-1.2.4_pretest.tgz  -C /data/src/cert && tar xf /root/bk/qiye/install_ee-v1.9.0.tgz  -C /data &&  tar xf /root/bk/qiye/src_2.5.tgz  -C /data  && cd /data/src/job/job/ && zip -u0 job-exec.war WEB-INF/lib/*.jar
+tar xf /root/bk/qiye/bkee_common-2.0.3.11.tgz   -C /data  &&
+tar xf /root/bk/qiye/bkee_product-2.5.1.17-pretest.tgz  -C /data  && 
+tar xf /root/bk/qiye/cert_ee-1.2.4_pretest.tgz  -C /data/src/cert && 
+tar xf /root/bk/qiye/install_ee-iam-08b6126e.tgz  -C /data &&
+tar xf /root/bk/qiye/src_2.5.tgz  -C /data  && 
+cd /data/src/job/job/ && zip -u0 job-exec.war WEB-INF/lib/*.jar
 if [ $? -ne 0 ];then 
 echo "没有找到软件包，或者软件包名字不对"
 exit
 fi
-
+exit
 cp /root/bk/qiye/install.config  /data/install/
 sed -i "s/bk.com/liu.com/"  /data/install/globals.env
 sed -ri "s/export PAAS_ADMIN_PASS='(\w+)'/export PAAS_ADMIN_PASS='123456'/"   /data/install/globals.env
