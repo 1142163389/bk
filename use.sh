@@ -1,3 +1,4 @@
+source "${CTRL_DIR}/utils.fc"
 get_agent_status (){
     ip=$1
     API="http://$PAAS_FQDN//api/c/compapi/v2/gse/get_agent_status/"
@@ -53,11 +54,15 @@ for i in ${ALL_IP[@]};do echo "$i";done
 }
 
 ge(){
-echo  "NGINX_IP -> ${NGINX_IP[@]}" 
+echo  "NGINX_IP -> ${NGINX_IP[@]}"     
 echo  "PAAS_IP  -> ${PAAS_IP[@]}" 
 echo  "CMDB_IP  -> ${CMDB_IP[@]}"   
 echo  "MYSQL_IP -> ${MYSQL_IP[@]}"
 echo  "REDIS_IP -> ${REDIS_IP[@]}" 
-rcmd $1
+echo  "USERMGR_IP -> ${REDIS_IP[@]}"
+echo  "IAM_IP -> ${REDIS_IP[@]}" 
+echo  "MONGODB_IP -> ${REDIS_IP[@]}" 
+
+rcmd $1  &>/dev/null
 }
 
