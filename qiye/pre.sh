@@ -50,7 +50,6 @@ if [ $? -ne 0 ];then
 echo "没有找到软件包，或者软件包名字不对"
 exit
 fi
-exit
 cp /root/bk/qiye/install.config  /data/install/
 sed -i "s/bk.com/liu.com/"  /data/install/globals.env
 sed -ri "s/export PAAS_ADMIN_PASS='(\w+)'/export PAAS_ADMIN_PASS='123456'/"   /data/install/globals.env
