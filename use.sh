@@ -61,8 +61,10 @@ echo  "MYSQL_IP -> ${MYSQL_IP[@]}"
 echo  "REDIS_IP -> ${REDIS_IP[@]}" 
 echo  "USERMGR_IP -> ${REDIS_IP[@]}"
 echo  "IAM_IP -> ${REDIS_IP[@]}" 
-echo  "MONGODB_IP -> ${REDIS_IP[@]}" 
-
+echo  "GSE_IP -> ${REDIS_IP[@]}" 
+echo  "JOB_IP -> ${REDIS_IP[@]}" 
+echo  "ZK_IP -> ${REDIS_IP[@]}" 
+echo  "RABBITMQ_IP -> ${REDIS_IP[@]}"
 rcmd $1  &>/dev/null
 }
 
